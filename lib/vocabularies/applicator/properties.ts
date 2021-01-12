@@ -10,6 +10,7 @@ const def: CodeKeywordDefinition = {
   schemaType: "object",
   code(cxt: KeywordCxt) {
     const {gen, schema, parentSchema, data, it} = cxt
+    //TODO-unevaluated do we need this?
     if (it.opts.removeAdditional === "all" && parentSchema.additionalProperties === undefined) {
       apDef.code(new KeywordCxt(it, apDef, "additionalProperties"))
     }
