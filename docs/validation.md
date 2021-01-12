@@ -618,6 +618,20 @@ While this behaviour is unexpected (issues [#129](https://github.com/ajv-validat
 
 The schema above is also more efficient - it will compile into a faster function.
 
+### Removing unevaluated properties
+
+With [option `removeUnevaluated`](./api.md#options) you can filter data during the validation.
+
+This option modifies original data.
+
+Example:
+
+```javascript
+//TODO-unevaluated: add example
+```
+
+//TODO-unevaluated: add description text for the option. See removeAdditional for inspiration
+
 ### Assigning defaults
 
 With [option `useDefaults`](./api.md#options) Ajv will assign values from `default` keyword in the schemas of `properties` and `items` (when it is the array of schemas) to the missing properties and items.

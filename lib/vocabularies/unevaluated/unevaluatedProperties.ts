@@ -27,6 +27,7 @@ const def: CodeKeywordDefinition = {
   trackErrors: true,
   error,
   code(cxt) {
+    //TODO-unevaluated
     const {gen, schema, data, errsCount, it} = cxt
     /* istanbul ignore if */
     if (!errsCount) throw new Error("ajv implementation error")

@@ -22,6 +22,7 @@ const def: CodeKeywordDefinition = {
   schemaType: ["boolean", "object"],
   error,
   code(cxt: KeywordCxt) {
+    //TODO-unevaluated
     const {gen, schema, data, it} = cxt
     const items = it.items || 0
     if (items === true) return

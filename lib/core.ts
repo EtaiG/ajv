@@ -59,7 +59,7 @@ import {getJSONTypes} from "./compile/validate/dataType"
 import {eachItem} from "./compile/util"
 
 import $dataRefSchema = require("./refs/data.json")
-
+//TODO-unevaluated
 const META_IGNORE_OPTIONS: (keyof Options)[] = ["removeAdditional", "useDefaults", "coerceTypes"]
 const EXT_SCOPE_NAMES = new Set([
   "validate",
@@ -99,6 +99,7 @@ interface CurrentOptions {
   loadSchema?: (uri: string) => Promise<AnySchemaObject>
   // options to modify validated data:
   removeAdditional?: boolean | "all" | "failing"
+  //TODO-unevaluated
   useDefaults?: boolean | "empty"
   coerceTypes?: boolean | "array"
   // advanced options:
