@@ -750,7 +750,7 @@ const data2 = {
 }
 
 console.log(validate(data2)) // true
-console.log(data2); // { foo: { y: 1, z: "" }}
+console.log(data2); // { foo: { x: "", y: 1 }}
 
 ```
 
