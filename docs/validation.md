@@ -642,7 +642,7 @@ Example 1 : remove unevaluated properties
 const ajv = new Ajv({removeUnevaluated: true})
 
 const schema = {
-  $schema: "http://json-schema.org/draft/2019-09/schema#",
+  $schema: "https://json-schema.org/draft/2019-09/schema",
   definitions: {
     reference1: {
       type: "object",
@@ -701,7 +701,7 @@ Example 2 : remove unevaluated properties with combination keyword
 const ajv = new Ajv({removeUnevaluated: true})
 
 const schema = {
-  $schema: "http://json-schema.org/draft/2019-09/schema#",
+  $schema: "https://json-schema.org/draft/2019-09/schema",
   type: "object",
   properties: {
     foo: {
@@ -761,7 +761,7 @@ Example 3 : remove unevaluated items
 const ajv = new Ajv({removeUnevaluated: true})
 
 const schema = {
-  $schema: "http://json-schema.org/draft/2019-09/schema#",
+  $schema: "https://json-schema.org/draft/2019-09/schema",
   type: "array",
   items: [{ const: "foo" }],
   anyOf: [
@@ -791,7 +791,7 @@ Example 4 : remove unevaluated items and properties
 const ajv = new Ajv({removeUnevaluated: true})
 
 const schema = {
-  $schema: "http://json-schema.org/draft/2019-09/schema#",
+  $schema: "https://json-schema.org/draft/2019-09/schema",
   type: "array",
   anyOf: [
     {
