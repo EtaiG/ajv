@@ -823,7 +823,7 @@ const validate = ajv.compile(schema)
 const data1 = [{ a: "", c: "" }, {b : "", c: ""}, {c: ""}];
 
 console.log(validate(data1)) // true
-console.log(data1); // [{ a: ""}, {b : "", c: ""}];
+console.log(data1); // [{ a: ""}];
 
 
 const data2 = [{ c : ""}]
