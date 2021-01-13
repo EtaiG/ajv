@@ -638,6 +638,7 @@ Compared to `removeAdditional`, it will always take into account all sub-schemas
 Example 1 : remove unevaluated properties 
 
 ```javascript
+import Ajv from "ajv/dist/2019";
 
 const ajv = new Ajv({removeUnevaluated: true})
 
@@ -697,6 +698,7 @@ console.log(data2); // { foo: "A", a: "", b: 1 }
 Example 2 : remove unevaluated properties with combination keyword
 
 ```javascript
+import Ajv from "ajv/dist/2019";
 
 const ajv = new Ajv({removeUnevaluated: true})
 
@@ -757,6 +759,7 @@ Example 3 : remove unevaluated items
 
 
 ```javascript
+import Ajv from "ajv/dist/2019";
 
 const ajv = new Ajv({removeUnevaluated: true})
 
@@ -787,6 +790,7 @@ console.log(data); // ["foo", "bar"];
 Example 4 : remove unevaluated items and properties
 
 ```javascript
+import Ajv from "ajv/dist/2019";
 
 const ajv = new Ajv({removeUnevaluated: true})
 
