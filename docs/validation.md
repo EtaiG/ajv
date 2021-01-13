@@ -732,7 +732,7 @@ const validate = ajv.compile(schema)
 const data1 = {
   foo: {
     x: "", 
-    y: 1 // will be removed; `unevaluatedProperties` == false
+    z: 1 // will be removed; `unevaluatedProperties` == false
   }
 }
 
@@ -742,8 +742,8 @@ console.log(data1); // { foo: {x: "" }}
 
 const data2 = {
   foo: {
-    y: 1,
-    z: "" : // will NOT be removed; `unevaluatedProperties` != false
+    x: "", 
+    y: 1 : // will NOT be removed; `unevaluatedProperties` != false
   }
 }
 
