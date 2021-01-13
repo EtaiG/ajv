@@ -793,22 +793,26 @@ const ajv = new Ajv({removeUnevaluated: true})
 const schema = {
   $schema: "http://json-schema.org/draft/2019-09/schema#",
   type: "array",
-  items: { type: "object" },
   anyOf: [
     {
-      items: {
-        type: "object",
-        properties: { a: { type: "string" } },
-        unevaluatedProperties: false
-      }
+      items: [
+        {
+          type: "object",
+          properties: { a: { type: "string" } },
+          unevaluatedProperties: false,
+          required: ["a"]
+        }
+      ]
     },
     {
-      items: {
-        type: "object",
-        properties: { b: { type: "string" } },
-        unevaluatedProperties: true,
-        required: ["b"]
-      }
+      items: [
+        {
+          type: "object",
+          properties: { b: { type: "string" } },
+          unevaluatedProperties: true,
+          required: ["b"]
+        }
+      ]
     }
   ],
   unevaluatedItems: false
@@ -816,10 +820,14 @@ const schema = {
 
 const validate = ajv.compile(schema)
 
-const data = [{ a: "", c: "" }, {b : "", c: ""}, {c: ""}];
+const data1 = [{ a: "", c: "" }, {b : "", c: ""}, {c: ""}];
 
-console.log(validate(data)) // true
-console.log(data); // [{ a: ""}, {b : "", c: ""}];
+console.log(validate(data1)) // true
+console.log(data1); // [{ a: ""}, {b : "", c: ""}];
+
+
+const data2 = [{ c : ""}]
+console.log(validate(data2)) // false, because the array does not match any subschema inside anyOf.
 
 ```
 
