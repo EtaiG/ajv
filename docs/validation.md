@@ -616,21 +616,224 @@ While this behaviour is unexpected (issues [#129](https://github.com/ajv-validat
 }
 ```
 
-The schema above is also more efficient - it will compile into a faster function.
+The schema above is also more efficient - it will compile into a faster function. Alternatively, you may use the [option `removeUnevaluated`](./validation.md#removing-unevaluated-properties).
 
 ### Removing unevaluated properties
 
-With [option `removeUnevaluated`](./api.md#options) you can filter data during the validation.
+With [option `removeUnevaluated`](./api.md#options) you can filter data during the validation. It is only compatible with draft 2019-09.
 
-This option modifies original data.
+This option modifies original data. It removes every property or item that would raise an error based on the keywords `unevaluatedProperties` and `unevaluatedItems`. It will first remove unevaluated properties then unevaluated items.
 
-Example:
+Compared to `removeAdditional`, it will always take into account all sub-schemas that were valid for this data instance : 
+
+
+- all subschemas schemas in `allOf` and `$ref` keywords
+- valid sub-schemas in `oneOf` and `anyOf` keywords
+- sub-schema in `if` keyword
+- sub-schemas in `then` or `else` keywords that were applied based on the validation result by `if` keyword.
+
+
+
+
+Example 1 : remove unevaluated properties 
 
 ```javascript
-//TODO-unevaluated: add example
+import Ajv from "ajv/dist/2019";
+
+const ajv = new Ajv({removeUnevaluated: true})
+
+const schema = {
+  $schema: "https://json-schema.org/draft/2019-09/schema",
+  definitions: {
+    reference1: {
+      type: "object",
+      properties: { a: { type: "string" } }
+    },
+    reference2: {
+      type: "object",
+      properties: { a: { type: "string" } },
+      unevaluatedProperties: true
+    }
+  },
+  unevaluatedProperties: false,
+  type: "object",
+  properties: {
+    foo: { type: "string" }
+  },
+  required: ["foo"],
+  if: {
+    properties: { foo: { const: "A" } }
+  },
+  then: {
+    $ref: "#/definitions/reference1"
+  },
+  else: {
+    $ref: "#/definitions/reference2"
+  }
+};
+
+const validate = ajv.compile(schema)
+
+const data1 = {
+  foo: "A",
+  a: "", 
+  b: 1 // will be removed; `unevaluatedProperties` == false
+}
+
+console.log(validate(data1)) // true
+console.log(data1); // { foo: "A", a: "" }
+
+
+const data2 = {
+  foo: "",
+  a: "", 
+  b: 1 // will NOT be removed; `unevaluatedProperties` != false
+}
+
+console.log(validate(data2)) // true
+console.log(data2); // { foo: "A", a: "", b: 1 }
+
 ```
 
-//TODO-unevaluated: add description text for the option. See removeAdditional for inspiration
+Example 2 : remove unevaluated properties with combination keyword
+
+```javascript
+import Ajv from "ajv/dist/2019";
+
+const ajv = new Ajv({removeUnevaluated: true})
+
+const schema = {
+  $schema: "https://json-schema.org/draft/2019-09/schema",
+  type: "object",
+  properties: {
+    foo: {
+      type: "object",
+      oneOf: [
+        {
+          properties: {
+            x: { type: "string" }
+          },
+          required: ["x"],
+          unevaluatedProperties: false
+        },
+        {
+          properties: {
+            y: { type: "integer" }
+          },
+          required: ["y"],
+          unevaluatedProperties: true
+        }
+      ]
+    }
+  },
+  required: ["foo"]
+};
+
+const validate = ajv.compile(schema)
+
+const data1 = {
+  foo: {
+    x: "", 
+    z: 1 // will be removed; `unevaluatedProperties` == false
+  }
+}
+
+console.log(validate(data1)) // true
+console.log(data1); // { foo: {x: "" }}
+
+
+const data2 = {
+  foo: {
+    x: "", 
+    y: 1 : // will NOT be removed; `unevaluatedProperties` != false
+  }
+}
+
+console.log(validate(data2)) // true
+console.log(data2); // { foo: { x: "", y: 1 }}
+
+```
+
+Example 3 : remove unevaluated items 
+
+
+
+```javascript
+import Ajv from "ajv/dist/2019";
+
+const ajv = new Ajv({removeUnevaluated: true})
+
+const schema = {
+  $schema: "https://json-schema.org/draft/2019-09/schema",
+  type: "array",
+  items: [{ const: "foo" }],
+  anyOf: [
+    {
+      items: [true, { const: "bar" }]
+    },
+    {
+      items: [true, true, { const: "baz" }]
+    }
+  ],
+  unevaluatedItems: false
+};
+
+const validate = ajv.compile(schema)
+
+const data = ["foo", "bar", "qux"];
+
+console.log(validate(data)) // true
+console.log(data); // ["foo", "bar"];
+
+```
+
+Example 4 : remove unevaluated items and properties
+
+```javascript
+import Ajv from "ajv/dist/2019";
+
+const ajv = new Ajv({removeUnevaluated: true})
+
+const schema = {
+  $schema: "https://json-schema.org/draft/2019-09/schema",
+  type: "array",
+  anyOf: [
+    {
+      items: [
+        {
+          type: "object",
+          properties: { a: { type: "string" } },
+          unevaluatedProperties: false,
+          required: ["a"]
+        }
+      ]
+    },
+    {
+      items: [
+        {
+          type: "object",
+          properties: { b: { type: "string" } },
+          unevaluatedProperties: true,
+          required: ["b"]
+        }
+      ]
+    }
+  ],
+  unevaluatedItems: false
+};
+
+const validate = ajv.compile(schema)
+
+const data1 = [{ a: "", c: "" }, {b : "", c: ""}, {c: ""}];
+
+console.log(validate(data1)) // true
+console.log(data1); // [{ a: ""}];
+
+
+const data2 = [{ c : ""}]
+console.log(validate(data2)) // false, because the array does not match any subschema inside anyOf.
+
+```
 
 ### Assigning defaults
 
